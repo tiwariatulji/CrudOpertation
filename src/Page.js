@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 // import React from 'react'
-import "./App.css"
 
 const initialState = {
     name: "",
@@ -43,9 +42,6 @@ const initialState = {
   
       if (!this.state.email.includes("@")) {
         emailError = "invalid email";
-      }
-      if(!this.state.mobileError){
-          mobileError= "Mobile no is not valid"
       }
   
       if (emailError || nameError) {
@@ -129,8 +125,6 @@ const initialState = {
           </div><br/>
           <button type="submit">Add user</button>
         </form>
-
-
         <div className="registrstion-table">  
                 <table>
                     <thead>
