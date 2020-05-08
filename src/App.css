@@ -42,3 +42,44 @@ body{
   padding: 0px;
   list-style-type: none;
 }
+.registrstion-table {
+  text-align: center;
+  display: block;
+  width: 100%;
+  margin-top: 50px;
+}
+.registrstion-table table{
+  width:60%;
+  margin:0 auto;
+  border: 1px solid #000000;
+}
+.registrstion-table table th{
+  background-color: #c5c5c5;
+  cell-padding:0px;
+}
+.registrstion-table table tr td{
+  padding:5px;
+  border-bottom: 1px solid #c5c5c5;
+}
+.registration-area{
+  display: block;
+  width: 50%;
+  margin: 0 auto;
+}
+.registration-area h1{
+  color:#067d81;
+  margin-bottom: 50px;
+}
+.registration-area .field-name {
+  display: block;
+  width: 100%;
+}
+.registration-area .field-name label{
+  width:30%;
+  display: inline-block;
+}
+.registration-area .field-name input{
+  width:50%;
+  display: inline-block;
+  padding:8px;
+}

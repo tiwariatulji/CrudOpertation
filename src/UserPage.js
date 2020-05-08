@@ -4,7 +4,7 @@ import "./App.css"
 
 const initialState = {
     name: "",
-    Mobile:"",
+    mobile:"",
     email: "",
     nameError: "",
     mobileError: "",
@@ -35,21 +35,19 @@ const initialState = {
     validate = () => {
       let nameError = "";
       let emailError = "";
-      let mobileError = "";
+      let mobilelError = "";
   
       if (!this.state.name) {
         nameError = "name cannot be blank";
       }
-  
+
+
       if (!this.state.email.includes("@")) {
         emailError = "invalid email";
       }
-      if(!this.state.mobileError){
-          mobileError= "Mobile no is not valid"
-      }
-  
-      if (emailError || nameError) {
-        this.setState({ emailError, nameError });
+      
+      if (emailError || nameError ) {
+        this.setState({ emailError, nameError});
         return false;
       }
   
@@ -63,7 +61,7 @@ const initialState = {
         const pushData = {
             id: 5,
             name: this.state.name,
-            mobile: this.state.MobileNo,
+            mobile: this.state.mobile,
             email: this.state.email,
         }
         const data = this.state.userData;
@@ -83,12 +81,20 @@ const initialState = {
         this.setState({ userData: tempData });
     }
   
+     editData =(id)=>{
+         console.log(id)
+         const data = this.state.userData
+
+     }
+
+
     render() {
       return (
           <div>
         <form onSubmit={this.handleSubmit}>
+          <div className="registration-area">  
              <h1>Form UserRegistration </h1>
-          <div>
+          <div className="field-name">
               <label>Name</label>
             <input
               type="text"
@@ -103,7 +109,7 @@ const initialState = {
   
   
           </div>
-          <div>
+          <div className="field-name">
               <label>Phone No</label>
             <input
               type="number"
@@ -115,7 +121,7 @@ const initialState = {
     
           </div><br/>
 
-          <div>
+          <div className="field-name">
               <label>Email Address</label>
             <input
               name="email"
@@ -128,6 +134,7 @@ const initialState = {
             </div>
           </div><br/>
           <button type="submit">Add user</button>
+          </div>
         </form>
 
 
@@ -138,6 +145,7 @@ const initialState = {
                             <th>Name</th>
                             <th>Mobile No</th>
                             <th>Email</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -149,7 +157,7 @@ const initialState = {
                                         <td>{item.mobile}</td>
                                         <td>{item.email}</td>
                                         <td>
-                                            <button >Edit</button>
+                                            <button onClick={()=>this.editData(item.id)} >Edit</button>
                                         
                                             <button onClick={() => this.deleteRecord(item.id)}>Delete</button>
                                         </td>
