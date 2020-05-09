@@ -9,18 +9,9 @@ const initialState = {
     nameError: "",
     mobileError: "",
     emailError: "",
-    userData: [{
-        id: '1',
-        name: 'Atul Tiwari',
-        mobile: '8090224440',
-        email:"atultiwari@itservicesindia"
-    }, {
-        id: '2',
-        name: 'Test',
-        mobile: '9852452',
-        email:"atultiwari@gamil.com"
-    }]
-
+    userData: [],
+    editView: false,
+    editId: '',
   };
   
   export default class Page extends React.Component {
@@ -35,19 +26,25 @@ const initialState = {
     validate = () => {
       let nameError = "";
       let emailError = "";
-      let mobilelError = "";
+      let mobileError = "";
   
       if (!this.state.name) {
         nameError = "name cannot be blank";
       }
-
-
-      if (!this.state.email.includes("@")) {
-        emailError = "invalid email";
+      else if (!/^[A-Z]+$/i.test(this.state.name)) {
+        nameError = "name should not have numbers";
+      }
+      if (!this.state.email) emailError = 'email cannot be blank';
+      else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(this.state.email)) {
+        emailError = 'Invalid email address'
+      }
+      if (!this.state.mobile) mobileError = 'mobile cannot be blank';
+      else if (this.state.mobile.length > 10) {
+        mobileError = 'Mobile number should be only 10 chanracter'
       }
       
-      if (emailError || nameError ) {
-        this.setState({ emailError, nameError});
+      if (emailError || nameError || mobileError ) {
+        this.setState({ emailError, nameError, mobileError});
         return false;
       }
   
@@ -57,23 +54,42 @@ const initialState = {
     handleSubmit = event => {
       event.preventDefault();
       const isValid = this.validate();
-      if (isValid) {
-        const pushData = {
-            id: 5,
-            name: this.state.name,
-            mobile: this.state.mobile,
-            email: this.state.email,
-        }
-        const data = this.state.userData;
-        data.push(pushData);
-        this.setState({ userData: data });
+        if (isValid) {
+          if (!this.state.editView) {
+            let lastId = 0
+            if (this.state.userData.length) {
+              const lastUserId = this.state.userData[this.state.userData.length - 1].id;
+              lastId = lastUserId + 1
+            }
+            const pushData = {
+                id: lastId,
+                name: this.state.name,
+                mobile: this.state.mobile,
+                email: this.state.email,
+            }
+            const data = this.state.userData;
+            data.push(pushData);
+            this.setState({ userData: data });
 
-        console.log(this.state);
-        // clear form
-        this.setState(initialState);
-        alert("User Add confirmation")
-      }
+            console.log(this.state);
+            // clear form
+            this.setState(initialState);
+            alert("User Add confirmation");
+          } else {
+            this.editUser()
+          }
+        }
     };
+    editUser() {
+      const filterUser = this.state.userData.filter(item => item.id === this.state.editId);
+      const userData = this.state.userData;
+      const getIndex = userData.indexOf(filterUser[0]);
+      userData[getIndex].name = this.state.name;
+      userData[getIndex].email = this.state.email;
+      userData[getIndex].mobile = this.state.mobile;
+      this.setState({ userData: userData, name: '', email: '', mobile: '', editView: false, editId: '' });
+      alert('User Data has been updated');
+    }
     deleteRecord = id => {
         console.log(id);
         const data = this.state.userData;
@@ -81,17 +97,30 @@ const initialState = {
         this.setState({ userData: tempData });
     }
   
-     editData =(id)=>{
-         console.log(id)
-         const data = this.state.userData
-
+    editData = id => {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        this.setState({ editView: true, editId: id });
+        const filterUser = this.state.userData.filter(item => item.id === id);
+        this.setState({
+          name: filterUser[0].name,
+          mobile: filterUser[0].mobile,
+          email: filterUser[0].email,
+        })
+    }
+     noRecordsData() {
+       if (!this.state.userData.length) {
+         return (
+           <tr>
+             <td colSpan="4">No records found</td>
+           </tr>
+         )
+       }
      }
-
-
     render() {
       return (
           <div>
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit} noValidate>
           <div className="registration-area">  
              <h1>Form UserRegistration </h1>
           <div className="field-name">
@@ -118,7 +147,9 @@ const initialState = {
               value={this.state.mobile}
               onChange={this.handleChange}
             />
-    
+            <div style={{ fontSize: 12, color: "red" }}>
+              {this.state.mobileError}
+            </div>
           </div><br/>
 
           <div className="field-name">
@@ -133,11 +164,9 @@ const initialState = {
               {this.state.emailError}
             </div>
           </div><br/>
-          <button type="submit">Add user</button>
+      <button type="submit"> { this.state.editView ? 'Save user' : 'Add user'}</button>
           </div>
         </form>
-
-
         <div className="registrstion-table">  
                 <table>
                     <thead>
@@ -149,6 +178,7 @@ const initialState = {
                         </tr>
                     </thead>
                     <tbody>
+                      { this.noRecordsData() }
                         {
                             this.state.userData.map((item, i) => {
                                 return (
